@@ -21,7 +21,8 @@ export class ProfilePage implements OnInit {
   namaBelakang: string;
   dataUrl: any;
   photo: SafeResourceUrl;
-  user: any ;
+  user: any;
+  feed: any;
   constructor(
     private navCtrl: NavController,
     private authSrv: AuthService,
@@ -36,8 +37,8 @@ export class ProfilePage implements OnInit {
 
   ngOnInit(){
       this.authSrv.userDetails().subscribe(res => {
-        console.log('res: ', res);
-        console.log('uid ', res.uid);
+        // console.log('res: ', res);
+        // console.log('uid ', res.uid);
         if(res !== null){
           this.userEmail = res.email;
           this.userSrv.getAll('user').snapshotChanges().pipe(
@@ -46,24 +47,16 @@ export class ProfilePage implements OnInit {
             )
           ).subscribe(data => {
             this.user = data;
-            console.log(this.user);
-            console.log(this.userEmail);
             this.user = this.user.filter(User => {
                 return User.email == this.userEmail
             });
             console.log(this.user);
             this.photo = this.user[0].imageUrl;
             this.namaDepan = this.user[0].nDepan;
-            this.namaBelakang =this.user[0].nBelakang
+            this.namaBelakang =this.user[0].nBelakang;
             this.dataUrl = this.photo;
-            console.log(this.namaDepan);
-            console.log(this.namaBelakang);
-            /*for(let i = 0; i < this.user.length;){
-                if(this.user[i].email === this.userEmail){
-                  this.photo = this.user[i].imageUrl;
-                }
-                i++;
-            }*/
+            this.showFeed(this.namaDepan);
+
           });
         }else {
           this.navCtrl.navigateBack('');
@@ -123,6 +116,16 @@ export class ProfilePage implements OnInit {
     return new File([u8arr], filename, {type: mime});
   }
 
+  showFeed(nDepan: string){
+    this.userSrv.getCurrentLocation(''+nDepan).snapshotChanges().pipe(
+      map(changes => 
+        changes.map(c => ({key: c.payload.key, ...c.payload.val()}))  
+      )
+    ).subscribe(data2 => {
+      this.feed=data2;
+    });
+  }
+
   upload(){
     this.presentLoading().then(() => {
               const file = this.dataURLtoFile(this.dataUrl, 'file');
@@ -178,6 +181,14 @@ export class ProfilePage implements OnInit {
     await loading.onDidDismiss();
   }
 
+  deleteLoc(key: string){
+    this.presentLoading().then(() => {
+    this.userSrv.DeleteLocation(key, this.namaDepan).then(res => {
+      
+    })
+    this.presentToast();
+  })
+  }
 
   logout(){
     this.presentLoading2().then(() => {

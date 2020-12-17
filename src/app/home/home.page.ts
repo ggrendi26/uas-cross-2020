@@ -26,8 +26,6 @@ export class HomePage implements OnInit {
 
   ngOnInit(){
       this.authSrv.userDetails().subscribe(res => {
-        console.log('res: ', res);
-        console.log('uid ', res.uid);
         if(res !== null){
           this.userEmail = res.email;
           this.userSrv.getAll('user').snapshotChanges().pipe(
@@ -45,14 +43,6 @@ export class HomePage implements OnInit {
             this.photo = this.user[0].imageUrl;
             this.namaDepan = this.user[0].nDepan;
             this.namaBelakang =this.user[0].nBelakang
-            console.log(this.namaDepan);
-            console.log(this.namaBelakang);
-            /*for(let i = 0; i < this.user.length;){
-                if(this.user[i].email === this.userEmail){
-                  this.photo = this.user[i].imageUrl;
-                }
-                i++;
-            }*/
           });
         }else {
           this.navCtrl.navigateBack('');
