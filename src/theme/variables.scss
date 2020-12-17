@@ -196,17 +196,4 @@
         --ion-tab-bar-background: #1f1f1f;
         --ion-card-background: #1e1e1e;
     }
-    ion-toolbar,
-    ion-content,
-    ion-card,
-    ion-card-title,
-    ion-tab-bar,
-    ion-grid,
-    ion-item {
-        --background: var(--ion-color-dark);
-        --color: var(--ion-color-primary);
-    }
-    .active-item {
-        --color: var(--ion-color-dark);
-    }
 }
